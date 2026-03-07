@@ -4,6 +4,7 @@ public class Projectile : MonoBehaviour
 {
     [SerializeField] private float moveSpeed = 10f;
     [SerializeField] private float lifeTime = 2f;
+    [SerializeField] private int damage = 1;
 
     private Rigidbody2D rb;
     private Vector2 moveDirection;
@@ -30,5 +31,17 @@ public class Projectile : MonoBehaviour
     {
         // 탄환 이동
         rb.linearVelocity = moveDirection * moveSpeed;
+    }
+
+    // 적과 충돌 시 데미지 적용
+    private void OnTriggerEnter2D(Collider2D other)
+    {
+        EnemyHealth enemy = other.GetComponent<EnemyHealth>();
+
+        if (enemy != null)
+        {
+            enemy.TakeDamage(damage);
+            Destroy(gameObject);
+        }
     }
 }
