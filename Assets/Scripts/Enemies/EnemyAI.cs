@@ -31,4 +31,15 @@ public class EnemyAI : MonoBehaviour
         // 이동
         rb.linearVelocity = direction * moveSpeed;
     }
+
+    // 플레이어와 충돌 시 데미지 처리
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        PlayerHealth player = collision.gameObject.GetComponent<PlayerHealth>();
+
+        if (player != null)
+        {
+            player.TakeDamage(1);
+        }
+    }
 }
