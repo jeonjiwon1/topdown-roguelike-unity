@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -6,24 +7,47 @@ public class PlayerMovement : MonoBehaviour
 
     private Rigidbody2D rb;
     private Vector2 moveInput;
-    private Vector2 moveVelocity;
 
     private void Awake()
     {
+        // 리지드바디 가져오기
         rb = GetComponent<Rigidbody2D>();
     }
 
     private void Update()
     {
-        float moveX = Input.GetAxisRaw("Horizontal");
-        float moveY = Input.GetAxisRaw("Vertical");
+        // 입력값 초기화
+        moveInput = Vector2.zero;
 
-        moveInput = new Vector2(moveX, moveY).normalized;
-        moveVelocity = moveInput * moveSpeed;
+        // W/S 입력
+        if (Keyboard.current.wKey.isPressed)
+        {
+            moveInput.y += 1f;
+        }
+
+        if (Keyboard.current.sKey.isPressed)
+        {
+            moveInput.y -= 1f;
+        }
+
+        // A/D 입력
+        if (Keyboard.current.aKey.isPressed)
+        {
+            moveInput.x -= 1f;
+        }
+
+        if (Keyboard.current.dKey.isPressed)
+        {
+            moveInput.x += 1f;
+        }
+
+        // 대각선 속도 보정
+        moveInput = moveInput.normalized;
     }
 
     private void FixedUpdate()
     {
-        rb.linearVelocity = moveVelocity;
+        // 실제 이동 처리
+        rb.linearVelocity = moveInput * moveSpeed;
     }
 }
