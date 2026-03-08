@@ -6,16 +6,7 @@ public class PlayerShooter : MonoBehaviour
     [SerializeField] private Transform firePoint;
     [SerializeField] private Projectile projectilePrefab;
 
-    private void Update()
-    {
-        // 마우스 왼쪽 클릭 시 발사
-        if (Mouse.current != null && Mouse.current.leftButton.wasPressedThisFrame)
-        {
-            Shoot();
-        }
-    }
-
-    private void Shoot()
+    public void Shoot()
     {
         // 탄환 생성
         Projectile projectile = Instantiate(projectilePrefab, firePoint.position, firePoint.rotation);
