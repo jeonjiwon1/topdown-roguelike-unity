@@ -188,4 +188,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
   maxHealth: 5
-  knockbackForce: 10
+  hitColor: {r: 1, g: 0.8431373, b: 0, a: 1}
+  hitFlashDuration: 0.08
