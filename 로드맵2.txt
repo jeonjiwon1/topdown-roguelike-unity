@@ -1,0 +1,135 @@
+1 프로젝트 초기 설정
+- Unity 프로젝트 생성
+- Git / GitHub 연결
+- 기본 폴더 구조 정리
+
+2 플레이어 기본 이동
+- WASD 이동
+- Rigidbody2D 이동 처리
+- 카메라 설정
+
+3 마우스 에임 시스템
+- 마우스 월드 좌표 변환
+- 플레이어 방향 회전
+
+4 기본 무기 시스템
+- Projectile 발사
+- FirePoint 구조
+- 탄환 이동
+
+5 Enemy 기본 AI
+- 플레이어 추적
+- Rigidbody 이동
+
+6 Enemy 체력 및 사망
+- EnemyHealth
+- Projectile 데미지
+- Enemy Destroy
+
+7 Enemy Spawn 시스템
+- 일정 시간마다 적 생성
+- 플레이어 주변 스폰
+
+8 Enemy FSM 구조
+- Idle
+- Chase
+- Attack
+
+9 Player Health 시스템
+- 플레이어 체력
+- Enemy 데미지
+- Player 사망
+
+10 Enemy Attack 시스템
+- 공격 사거리
+- 공격 쿨타임
+- Attack 상태 실제 공격
+
+11 전투 시스템 개선
+- Knockback
+- Hit feedback
+- 전투 밸런스
+
+12 플레이어 무기 전환 시스템
+- 현재 장착 무기 관리
+- 실시간 무기 교체
+- 입력 기반 무기 전환
+
+13 플레이어 무기 3종 구현
+- 근접 무기
+- 원거리 무기
+- 마법 무기
+
+14 드론 기본 시스템
+- 플레이어 추적 드론
+- 드론 상태 관리
+- 드론 모드 전환 구조
+
+15 드론 역할 3종 구현
+- 힐 드론
+- 공격력 증가 버프 드론
+- 공격 드론
+
+16 Enemy 다양화
+- Fast Enemy
+- Tank Enemy
+- Shooter Enemy
+
+17 Enemy 상성 시스템
+- 무기 타입 상성
+- 적 타입별 약점
+- 전투 전략 요소 추가
+
+18 Boss 시스템
+- 보스 패턴
+- 보스 상성
+- 보스 전투 설계
+
+19 Wave / Difficulty 시스템
+- 난이도 상승
+- 스폰 패턴
+
+20 맵 / 지형 시스템
+- 장애물
+- 지형 전략 요소
+
+21 Procedural Dungeon Generation
+- 랜덤 Room 생성
+- Corridor 연결
+
+22 Progression 시스템
+- 무기 업그레이드
+- 플레이어 능력 강화
+
+23 UI 시스템
+- HP UI
+- 무기 UI
+- 드론 상태 UI
+- 미니맵
+
+24 시각 / 사운드 개선
+- VFX
+- SFX
+- 애니메이션
+
+25 게임 밸런싱
+- Enemy 수치 조정
+- Weapon 밸런스
+
+26 최적화
+- Object Pooling
+- 성능 개선
+
+27 콘텐츠 확장
+- 새로운 무기
+- 새로운 적
+- 새로운 던전
+
+28 최종 테스트
+- 버그 수정
+- 플레이 테스트
+
+29 빌드 및 배포
+- 게임 빌드
+- Steam 배포
+- 포트폴리오 정리
