@@ -1,0 +1,114 @@
+1 프로젝트 초기 설정
+- Unity 프로젝트 생성
+- Git / GitHub 연결
+- 기본 폴더 구조 정리
+
+2 플레이어 기본 이동
+- WASD 이동
+- Rigidbody2D 이동 처리
+- 카메라 설정
+
+3 마우스 에임 시스템
+- 마우스 월드 좌표 변환
+- 플레이어 방향 회전
+
+4 기본 무기 시스템
+- Projectile 발사
+- FirePoint 구조
+- 탄환 이동
+
+5 Enemy 기본 AI
+- 플레이어 추적
+- Rigidbody 이동
+
+6 Enemy 체력 및 사망
+- EnemyHealth
+- Projectile 데미지
+- Enemy Destroy
+
+7 Enemy Spawn 시스템
+- 일정 시간마다 적 생성
+- 플레이어 주변 스폰
+
+8 Enemy FSM 구조
+- Idle
+- Chase
+- Attack
+
+9 Player Health 시스템
+- 플레이어 체력
+- Enemy 데미지
+- Player 사망
+
+10 Enemy Attack 시스템
+- 공격 사거리
+- 공격 쿨타임
+- Attack 상태 실제 공격
+
+11 전투 시스템 개선
+- Knockback
+- Hit feedback
+- 전투 밸런스
+
+12 Drone Companion AI
+- 플레이어 따라다니는 드론
+- 자동 적 탐색
+- 자동 공격
+
+13 Weapon 시스템 확장
+- Melee
+- Ranged
+- Magic
+
+14 Enemy 다양화
+- Fast Enemy
+- Tank Enemy
+- Shooter Enemy
+
+15 Wave / Difficulty 시스템
+- 난이도 상승
+- 스폰 패턴
+
+16 Procedural Dungeon Generation
+- 랜덤 Room 생성
+- Corridor 연결
+
+17 Town Hub 시스템
+- 던전 시작 지점
+- 상점 / 업그레이드
+
+18 Progression 시스템
+- 무기 업그레이드
+- 플레이어 능력 강화
+
+19 UI 시스템
+- HP UI
+- 무기 UI
+- 미니맵
+
+20 시각 / 사운드 개선
+- VFX
+- SFX
+- 애니메이션
+
+21 게임 밸런싱
+- Enemy 수치 조정
+- Weapon 밸런스
+
+22 최적화
+- Object Pooling
+- 성능 개선
+
+23 콘텐츠 확장
+- 새로운 무기
+- 새로운 적
+- 새로운 던전
+
+24 최종 테스트
+- 버그 수정
+- 플레이 테스트
+
+25 빌드 및 배포
+- 게임 빌드
+- Steam 배포
+- 포트폴리오 정리
