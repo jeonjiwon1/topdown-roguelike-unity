@@ -11,6 +11,9 @@ public class PlayerWeaponController : MonoBehaviour
     [Header("근거리 무기")]
     [SerializeField] private MeleeWeapon meleeWeapon;
 
+    [Header("마법 무기")]
+    [SerializeField] private MagicWeapon magicWeapon;
+
     private void Update()
     {
         HandleWeaponSwitch();
@@ -82,7 +85,10 @@ public class PlayerWeaponController : MonoBehaviour
 
     private void MagicAttack()
     {
-        // 아직 미구현
-        Debug.Log("Magic Attack");
+        if (magicWeapon != null)
+        {
+            Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            magicWeapon.Attack(mousePos);
+        }
     }
 }

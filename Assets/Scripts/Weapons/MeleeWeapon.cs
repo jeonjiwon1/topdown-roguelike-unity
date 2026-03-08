@@ -7,13 +7,21 @@ public class MeleeWeapon : MonoBehaviour
     [SerializeField] private int damage = 2;
     [SerializeField] private float knockbackForce = 6f;
     [SerializeField] private float knockbackDuration = 0.15f;
+    [SerializeField] private float attackCooldown = 0.5f;
+
+    private float lastAttackTime;
 
     [Header("레이어 설정")]
     [SerializeField] private LayerMask enemyLayer;
 
     public void Attack()
     {
-        // 플레이어 위치 기준으로 원형 범위 안의 적 찾기
+        // 쿨타임 체크
+        if (Time.time < lastAttackTime + attackCooldown)
+            return;
+
+        lastAttackTime = Time.time;
+
         Collider2D[] hits = Physics2D.OverlapCircleAll(transform.position, attackRadius, enemyLayer);
 
         foreach (Collider2D hit in hits)
@@ -22,13 +30,11 @@ public class MeleeWeapon : MonoBehaviour
 
             if (enemyHealth != null)
             {
-                // 데미지 적용
+                // 적에게 피해 적용
                 enemyHealth.TakeDamage(damage);
-
                 // 넉백 방향 계산
                 Vector2 direction = (hit.transform.position - transform.position).normalized;
-
-                // 넉백 적용
+                // 적에게 넉백 적용
                 enemyHealth.ApplyKnockback(direction, knockbackForce, knockbackDuration);
             }
         }
