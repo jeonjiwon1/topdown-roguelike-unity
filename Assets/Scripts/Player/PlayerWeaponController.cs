@@ -3,7 +3,7 @@ using UnityEngine;
 public class PlayerWeaponController : MonoBehaviour
 {
     [Header("현재 무기")]
-    [SerializeField] private PlayerWeaponType currentWeapon = PlayerWeaponType.Ranged;
+    [SerializeField] private PlayerWeaponType currentWeapon = PlayerWeaponType.Melee;
 
     [Header("원거리 무기")]
     [SerializeField] private PlayerShooter playerShooter;
@@ -13,6 +13,22 @@ public class PlayerWeaponController : MonoBehaviour
 
     [Header("마법 무기")]
     [SerializeField] private MagicWeapon magicWeapon;
+
+    private PlayerWeaponType[] weaponOrder =
+    {
+        PlayerWeaponType.Melee,
+        PlayerWeaponType.Ranged,
+        PlayerWeaponType.Magic
+    };
+
+    private int currentWeaponIndex = 0;
+
+    private void Start()
+    {
+        // 시작 무기에 맞는 인덱스 설정
+        SetWeaponIndexFromCurrentWeapon();
+        LogCurrentWeapon();
+    }
 
     private void Update()
     {
@@ -26,25 +42,32 @@ public class PlayerWeaponController : MonoBehaviour
 
     private void HandleWeaponSwitch()
     {
-        // 1번 키 → 근접
-        if (Input.GetKeyDown(KeyCode.Alpha1))
+        // Q → 이전 무기
+        if (Input.GetKeyDown(KeyCode.Q))
         {
-            currentWeapon = PlayerWeaponType.Melee;
-            Debug.Log("Weapon: Melee");
+            currentWeaponIndex--;
+
+            if (currentWeaponIndex < 0)
+            {
+                currentWeaponIndex = weaponOrder.Length - 1;
+            }
+
+            currentWeapon = weaponOrder[currentWeaponIndex];
+            LogCurrentWeapon();
         }
 
-        // 2번 키 → 원거리
-        if (Input.GetKeyDown(KeyCode.Alpha2))
+        // E → 다음 무기
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            currentWeapon = PlayerWeaponType.Ranged;
-            Debug.Log("Weapon: Ranged");
-        }
+            currentWeaponIndex++;
 
-        // 3번 키 → 마법
-        if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            currentWeapon = PlayerWeaponType.Magic;
-            Debug.Log("Weapon: Magic");
+            if (currentWeaponIndex >= weaponOrder.Length)
+            {
+                currentWeaponIndex = 0;
+            }
+
+            currentWeapon = weaponOrder[currentWeaponIndex];
+            LogCurrentWeapon();
         }
     }
 
@@ -90,5 +113,26 @@ public class PlayerWeaponController : MonoBehaviour
             Vector2 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             magicWeapon.Attack(mousePos);
         }
+    }
+
+    private void SetWeaponIndexFromCurrentWeapon()
+    {
+        for (int i = 0; i < weaponOrder.Length; i++)
+        {
+            if (weaponOrder[i] == currentWeapon)
+            {
+                currentWeaponIndex = i;
+                return;
+            }
+        }
+
+        // 혹시 못 찾으면 기본값으로 설정
+        currentWeaponIndex = 0;
+        currentWeapon = weaponOrder[currentWeaponIndex];
+    }
+
+    private void LogCurrentWeapon()
+    {
+        Debug.Log("Weapon: " + currentWeapon);
     }
 }
