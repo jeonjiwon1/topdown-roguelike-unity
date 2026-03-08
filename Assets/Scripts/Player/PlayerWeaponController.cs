@@ -8,6 +8,9 @@ public class PlayerWeaponController : MonoBehaviour
     [Header("원거리 무기")]
     [SerializeField] private PlayerShooter playerShooter;
 
+    [Header("근거리 무기")]
+    [SerializeField] private MeleeWeapon meleeWeapon;
+
     private void Update()
     {
         HandleWeaponSwitch();
@@ -62,8 +65,10 @@ public class PlayerWeaponController : MonoBehaviour
 
     private void MeleeAttack()
     {
-        // 아직 미구현
-        Debug.Log("Melee Attack");
+        if (meleeWeapon != null)
+        {
+            meleeWeapon.Attack();
+        }
     }
 
     private void RangedAttack()
