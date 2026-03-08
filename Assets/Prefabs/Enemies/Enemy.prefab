@@ -171,6 +171,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyAI
   moveSpeed: 3
+  chaseRange: 8
+  attackRange: 1.5
+  attackDamage: 1
+  attackCooldown: 1
 --- !u!114 &3282564698334317302
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -183,4 +187,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c320e85ff6f5c74f87e2d9b12941c26, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemyHealth
-  maxHealth: 3
+  maxHealth: 5
+  knockbackForce: 10
