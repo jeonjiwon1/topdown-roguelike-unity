@@ -3,14 +3,19 @@ using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
+    private enum SpawnMode
+    {
+        Sequential,
+        Burst
+    }
+
     [Header("스폰할 적 목록")]
     [SerializeField] private GameObject[] enemyPrefabs;
 
     [Header("대상")]
     [SerializeField] private Transform player;
 
-    [Header("스폰 설정")]
-    [SerializeField] private float spawnInterval = 1f;
+    [Header("기본 스폰 설정")]
     [SerializeField] private float spawnDistance = 8f;
 
     [Header("웨이브 설정")]
@@ -18,6 +23,12 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int baseEnemyCount = 5;
     [SerializeField] private int enemyCountIncreasePerWave = 2;
     [SerializeField] private float waveStartDelay = 2f;
+
+    [Header("스폰 방식 설정")]
+    [SerializeField] private SpawnMode spawnMode = SpawnMode.Sequential;
+    [SerializeField] private float sequentialSpawnInterval = 1f;
+    [SerializeField] private int burstSpawnCountPerBatch = 3;
+    [SerializeField] private float burstSpawnInterval = 2f;
 
     private int currentWave;
     private int enemiesToSpawn;
@@ -29,7 +40,7 @@ public class EnemySpawner : MonoBehaviour
     private bool isWaveActive;
     private bool isWaitingNextWave;
 
-    private List<GameObject> aliveEnemies = new List<GameObject>();
+    private readonly List<GameObject> aliveEnemies = new List<GameObject>();
 
     private void Start()
     {
@@ -41,7 +52,6 @@ public class EnemySpawner : MonoBehaviour
     {
         CleanupDeadEnemies();
 
-        // 다음 웨이브 대기 상태
         if (isWaitingNextWave)
         {
             waveDelayTimer += Time.deltaTime;
@@ -56,25 +66,29 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        // 웨이브 진행 중이면 적 순차 스폰
-        if (isWaveActive)
+        if (!isWaveActive)
         {
-            spawnTimer += Time.deltaTime;
+            return;
+        }
 
-            if (enemiesSpawnedInWave < enemiesToSpawn && spawnTimer >= spawnInterval)
-            {
-                spawnTimer = 0f;
-                SpawnEnemy();
-            }
+        switch (spawnMode)
+        {
+            case SpawnMode.Sequential:
+                UpdateSequentialSpawn();
+                break;
 
-            // 이번 웨이브 적을 전부 생성했고, 살아있는 적도 없으면 다음 웨이브
-            if (enemiesSpawnedInWave >= enemiesToSpawn && aliveEnemies.Count == 0)
-            {
-                isWaveActive = false;
-                isWaitingNextWave = true;
+            case SpawnMode.Burst:
+                UpdateBurstSpawn();
+                break;
+        }
 
-                Debug.Log("Wave Clear : " + currentWave);
-            }
+        // 현재 웨이브의 적을 전부 스폰했고, 살아있는 적도 없으면 클리어
+        if (enemiesSpawnedInWave >= enemiesToSpawn && aliveEnemies.Count == 0)
+        {
+            isWaveActive = false;
+            isWaitingNextWave = true;
+
+            Debug.Log("Wave Clear : " + currentWave);
         }
     }
 
@@ -89,7 +103,46 @@ public class EnemySpawner : MonoBehaviour
         Debug.Log("Wave Start : " + currentWave + " / Enemy Count : " + enemiesToSpawn);
     }
 
-    private void SpawnEnemy()
+    private void UpdateSequentialSpawn()
+    {
+        if (enemiesSpawnedInWave >= enemiesToSpawn)
+        {
+            return;
+        }
+
+        spawnTimer += Time.deltaTime;
+
+        if (spawnTimer >= sequentialSpawnInterval)
+        {
+            spawnTimer = 0f;
+            SpawnOneEnemy();
+        }
+    }
+
+    private void UpdateBurstSpawn()
+    {
+        if (enemiesSpawnedInWave >= enemiesToSpawn)
+        {
+            return;
+        }
+
+        spawnTimer += Time.deltaTime;
+
+        if (spawnTimer >= burstSpawnInterval)
+        {
+            spawnTimer = 0f;
+
+            int remainCount = enemiesToSpawn - enemiesSpawnedInWave;
+            int spawnCount = Mathf.Min(burstSpawnCountPerBatch, remainCount);
+
+            for (int i = 0; i < spawnCount; i++)
+            {
+                SpawnOneEnemy();
+            }
+        }
+    }
+
+    private void SpawnOneEnemy()
     {
         if (player == null)
         {
@@ -117,7 +170,6 @@ public class EnemySpawner : MonoBehaviour
         }
 
         Vector2 spawnPosition = (Vector2)player.position + randomDirection * spawnDistance;
-
         GameObject spawnedEnemy = Instantiate(selectedEnemy, spawnPosition, Quaternion.identity);
 
         aliveEnemies.Add(spawnedEnemy);
