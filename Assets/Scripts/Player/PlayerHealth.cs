@@ -1,4 +1,5 @@
 using UnityEngine;
+using System;
 
 public class PlayerHealth : MonoBehaviour
 {
@@ -8,15 +9,16 @@ public class PlayerHealth : MonoBehaviour
     private int currentHealth;
     private float invincibleTimer;
 
+    // 피격 이벤트
+    public event Action OnDamaged;
+
     private void Awake()
     {
-        // 체력 초기화
         currentHealth = maxHealth;
     }
 
     private void Update()
     {
-        // 무적 시간 감소
         if (invincibleTimer > 0)
         {
             invincibleTimer -= Time.deltaTime;
@@ -25,7 +27,6 @@ public class PlayerHealth : MonoBehaviour
 
     public void TakeDamage(int damage)
     {
-        // 무적 상태면 무시
         if (invincibleTimer > 0)
         {
             return;
@@ -37,10 +38,26 @@ public class PlayerHealth : MonoBehaviour
 
         invincibleTimer = invincibleTime;
 
+        // 피격 이벤트 호출
+        OnDamaged?.Invoke();
+
         if (currentHealth <= 0)
         {
             Die();
         }
+    }
+
+    // 힐 함수
+    public void Heal(int amount)
+    {
+        currentHealth += amount;
+
+        if (currentHealth > maxHealth)
+        {
+            currentHealth = maxHealth;
+        }
+
+        Debug.Log("Heal → HP : " + currentHealth);
     }
 
     private void Die()
