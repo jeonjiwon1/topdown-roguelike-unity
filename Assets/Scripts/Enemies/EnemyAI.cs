@@ -13,8 +13,11 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private int attackDamage = 1;
     [SerializeField] private float attackCooldown = 1f;
 
-    [Header("자폭 적 설정")]
+    [Header("적 타입 설정")]
     [SerializeField] private bool isSuicideEnemy = false;
+
+    [Header("넉백 저항")]
+    [SerializeField] private float knockbackMultiplier = 1f;
 
     private Transform player;
     private PlayerHealth playerHealth;
@@ -23,7 +26,6 @@ public class EnemyAI : MonoBehaviour
     private EnemyState currentState;
     private float lastAttackTime;
 
-    // 넉백 관련 변수
     private bool isKnockedBack;
     private float knockbackTimer;
     private Vector2 knockbackVelocity;
@@ -189,9 +191,18 @@ public class EnemyAI : MonoBehaviour
 
     public void ApplyKnockback(Vector2 hitDirection, float force, float duration)
     {
+        // 넉백 배수 적용
+        float finalForce = force * knockbackMultiplier;
+
+        // 넉백이 거의 없으면 무시
+        if (finalForce <= 0.01f)
+        {
+            return;
+        }
+
         // 넉백 시작
         isKnockedBack = true;
         knockbackTimer = duration;
-        knockbackVelocity = hitDirection.normalized * force;
+        knockbackVelocity = hitDirection.normalized * finalForce;
     }
 }
