@@ -21,6 +21,12 @@ public class Projectile : MonoBehaviour
         Destroy(gameObject, lifetime);
     }
 
+    // 데미지 배수 적용
+    public void ApplyDamageMultiplier(float multiplier)
+    {
+        damage = Mathf.RoundToInt(damage * multiplier);
+    }
+
     private void Update()
     {
         // 탄환 이동
@@ -29,18 +35,12 @@ public class Projectile : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        // 적 체력 컴포넌트 찾기
         EnemyHealth enemy = collision.GetComponent<EnemyHealth>();
 
         if (enemy != null)
         {
-            // 데미지 적용
             enemy.TakeDamage(damage);
-
-            // 넉백 적용
             enemy.ApplyKnockback(moveDirection, knockbackForce, knockbackDuration);
-
-            // 탄환 제거
             Destroy(gameObject);
         }
     }

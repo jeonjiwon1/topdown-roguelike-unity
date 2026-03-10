@@ -21,7 +21,11 @@ public class PlayerWeaponController : MonoBehaviour
         PlayerWeaponType.Magic
     };
 
+    // 현재 무기 인덱스 (Q/E로 무기 변경 시 사용)
     private int currentWeaponIndex = 0;
+
+    // 플레이어 공격 배수 (버프/디버프용)
+    private float attackMultiplier = 1f;
 
     private void Start()
     {
@@ -134,5 +138,17 @@ public class PlayerWeaponController : MonoBehaviour
     private void LogCurrentWeapon()
     {
         Debug.Log("Weapon: " + currentWeapon);
+    }
+
+    // 공격 배수 설정
+    public void SetAttackMultiplier(float multiplier)
+    {
+        attackMultiplier = multiplier;
+    }
+
+    // 공격 배수 가져오기
+    public float GetAttackMultiplier()
+    {
+        return attackMultiplier;
     }
 }
