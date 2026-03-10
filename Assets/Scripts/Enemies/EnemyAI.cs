@@ -13,6 +13,9 @@ public class EnemyAI : MonoBehaviour
     [SerializeField] private int attackDamage = 1;
     [SerializeField] private float attackCooldown = 1f;
 
+    [Header("자폭 적 설정")]
+    [SerializeField] private bool isSuicideEnemy = false;
+
     private Transform player;
     private PlayerHealth playerHealth;
     private Rigidbody2D rb;
@@ -167,14 +170,21 @@ public class EnemyAI : MonoBehaviour
 
     private void AttackPlayer()
     {
-        // 플레이어 체력이 있으면 데미지 적용
+        // 플레이어 체력이 없으면 종료
         if (playerHealth == null)
         {
             return;
         }
 
+        // 플레이어에게 데미지 적용
         playerHealth.TakeDamage(attackDamage);
         lastAttackTime = Time.time;
+
+        // 자폭 적이면 공격 후 즉시 사망
+        if (isSuicideEnemy)
+        {
+            Destroy(gameObject);
+        }
     }
 
     public void ApplyKnockback(Vector2 hitDirection, float force, float duration)
