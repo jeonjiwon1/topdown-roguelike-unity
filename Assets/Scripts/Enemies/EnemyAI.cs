@@ -15,6 +15,11 @@ public class EnemyAI : MonoBehaviour
 
     [Header("적 타입 설정")]
     [SerializeField] private bool isSuicideEnemy = false;
+    [SerializeField] private bool isRangedEnemy = false;
+
+    [Header("원거리 적 거리 유지")]
+    [SerializeField] private float preferredRange = 5f;
+    [SerializeField] private float rangeTolerance = 0.5f;
 
     [Header("넉백 저항")]
     [SerializeField] private float knockbackMultiplier = 1f;
@@ -115,7 +120,14 @@ public class EnemyAI : MonoBehaviour
 
         if (currentState == EnemyState.Chase)
         {
-            MoveToPlayer();
+            if (isRangedEnemy)
+            {
+                MoveForRangedEnemy();
+            }
+            else
+            {
+                MoveToPlayer();
+            }
         }
         else
         {
@@ -135,8 +147,8 @@ public class EnemyAI : MonoBehaviour
 
     private void UpdateChase(float distance)
     {
-        // 공격 범위 안이면 공격으로 전환
-        if (distance <= attackRange)
+        // 원거리 적은 근접 공격 상태로 가지 않음
+        if (!isRangedEnemy && distance <= attackRange)
         {
             currentState = EnemyState.Attack;
         }
@@ -149,6 +161,13 @@ public class EnemyAI : MonoBehaviour
 
     private void UpdateAttack(float distance)
     {
+        // 원거리 적이면 공격 상태 사용 안 함
+        if (isRangedEnemy)
+        {
+            currentState = EnemyState.Chase;
+            return;
+        }
+
         // 공격 범위 밖이면 다시 추적으로 전환
         if (distance > attackRange)
         {
@@ -168,6 +187,31 @@ public class EnemyAI : MonoBehaviour
         // 플레이어 방향으로 이동
         Vector2 direction = (player.position - transform.position).normalized;
         rb.linearVelocity = direction * moveSpeed;
+    }
+
+    private void MoveForRangedEnemy()
+    {
+        float distance = Vector2.Distance(transform.position, player.position);
+        Vector2 direction = (player.position - transform.position).normalized;
+
+        float minRange = preferredRange - rangeTolerance;
+        float maxRange = preferredRange + rangeTolerance;
+
+        // 너무 멀면 접근
+        if (distance > maxRange)
+        {
+            rb.linearVelocity = direction * moveSpeed;
+        }
+        // 너무 가까우면 뒤로 후퇴
+        else if (distance < minRange)
+        {
+            rb.linearVelocity = -direction * moveSpeed;
+        }
+        // 적정 거리면 정지
+        else
+        {
+            rb.linearVelocity = Vector2.zero;
+        }
     }
 
     private void AttackPlayer()
