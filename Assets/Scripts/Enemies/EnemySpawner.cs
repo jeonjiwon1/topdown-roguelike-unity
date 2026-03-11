@@ -1,16 +1,14 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    private enum SpawnMode
-    {
-        Sequential,
-        Burst
-    }
-
-    [Header("스폰할 적 목록")]
+    [Header("랜덤 스폰용 적 목록")]
     [SerializeField] private GameObject[] enemyPrefabs;
+
+    [Header("패턴 웨이브 설정")]
+    [SerializeField] private WavePattern[] wavePatterns;
 
     [Header("대상")]
     [SerializeField] private Transform player;
@@ -24,8 +22,8 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int enemyCountIncreasePerWave = 2;
     [SerializeField] private float waveStartDelay = 2f;
 
-    [Header("스폰 방식 설정")]
-    [SerializeField] private SpawnMode spawnMode = SpawnMode.Sequential;
+    [Header("랜덤 웨이브 기본 스폰 방식")]
+    [SerializeField] private SpawnMode defaultSpawnMode = SpawnMode.Sequential;
     [SerializeField] private float sequentialSpawnInterval = 1f;
     [SerializeField] private int burstSpawnCountPerBatch = 3;
     [SerializeField] private float burstSpawnInterval = 2f;
@@ -71,18 +69,22 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        switch (spawnMode)
+        // 패턴 웨이브가 없는 경우에만 랜덤 웨이브 스폰 실행
+        if (currentWave - 1 >= wavePatterns.Length)
         {
-            case SpawnMode.Sequential:
-                UpdateSequentialSpawn();
-                break;
+            switch (defaultSpawnMode)
+            {
+                case SpawnMode.Sequential:
+                    UpdateSequentialSpawn();
+                    break;
 
-            case SpawnMode.Burst:
-                UpdateBurstSpawn();
-                break;
+                case SpawnMode.Burst:
+                    UpdateBurstSpawn();
+                    break;
+            }
         }
 
-        // 현재 웨이브의 적을 전부 스폰했고, 살아있는 적도 없으면 클리어
+        // 이번 웨이브 적을 전부 생성했고, 살아있는 적도 없으면 웨이브 종료
         if (enemiesSpawnedInWave >= enemiesToSpawn && aliveEnemies.Count == 0)
         {
             isWaveActive = false;
@@ -95,12 +97,64 @@ public class EnemySpawner : MonoBehaviour
     private void StartNextWave()
     {
         currentWave++;
-        enemiesToSpawn = baseEnemyCount + (currentWave - 1) * enemyCountIncreasePerWave;
         enemiesSpawnedInWave = 0;
         spawnTimer = 0f;
         isWaveActive = true;
 
-        Debug.Log("Wave Start : " + currentWave + " / Enemy Count : " + enemiesToSpawn);
+        // 패턴 웨이브가 있으면 그걸 우선 사용
+        if (currentWave - 1 < wavePatterns.Length)
+        {
+            StartPatternWave(wavePatterns[currentWave - 1]);
+        }
+        else
+        {
+            enemiesToSpawn = baseEnemyCount + (currentWave - 1) * enemyCountIncreasePerWave;
+            Debug.Log("Random Wave Start : " + currentWave + " / Enemy Count : " + enemiesToSpawn);
+        }
+    }
+
+    private void StartPatternWave(WavePattern pattern)
+    {
+        enemiesToSpawn = 0;
+
+        if (pattern.spawnGroups != null)
+        {
+            foreach (SpawnGroup group in pattern.spawnGroups)
+            {
+                enemiesToSpawn += group.count;
+            }
+
+            foreach (SpawnGroup group in pattern.spawnGroups)
+            {
+                StartCoroutine(SpawnGroupRoutine(group));
+            }
+        }
+
+        Debug.Log("Pattern Wave Start : " + pattern.waveName + " / Enemy Count : " + enemiesToSpawn);
+    }
+
+    private IEnumerator SpawnGroupRoutine(SpawnGroup group)
+    {
+        if (group.enemyPrefab == null)
+        {
+            yield break;
+        }
+
+        if (group.spawnMode == SpawnMode.Burst)
+        {
+            for (int i = 0; i < group.count; i++)
+            {
+                SpawnSpecificEnemy(group.enemyPrefab);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < group.count; i++)
+            {
+                SpawnSpecificEnemy(group.enemyPrefab);
+                yield return new WaitForSeconds(group.spawnInterval);
+            }
+        }
     }
 
     private void UpdateSequentialSpawn()
@@ -115,7 +169,7 @@ public class EnemySpawner : MonoBehaviour
         if (spawnTimer >= sequentialSpawnInterval)
         {
             spawnTimer = 0f;
-            SpawnOneEnemy();
+            SpawnOneRandomEnemy();
         }
     }
 
@@ -137,12 +191,12 @@ public class EnemySpawner : MonoBehaviour
 
             for (int i = 0; i < spawnCount; i++)
             {
-                SpawnOneEnemy();
+                SpawnOneRandomEnemy();
             }
         }
     }
 
-    private void SpawnOneEnemy()
+    private void SpawnOneRandomEnemy()
     {
         if (player == null)
         {
@@ -161,19 +215,37 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
+        Vector2 spawnPosition = GetRandomSpawnPosition();
+        GameObject spawnedEnemy = Instantiate(selectedEnemy, spawnPosition, Quaternion.identity);
+
+        aliveEnemies.Add(spawnedEnemy);
+        enemiesSpawnedInWave++;
+    }
+
+    private void SpawnSpecificEnemy(GameObject prefab)
+    {
+        if (player == null || prefab == null)
+        {
+            return;
+        }
+
+        Vector2 spawnPosition = GetRandomSpawnPosition();
+        GameObject spawnedEnemy = Instantiate(prefab, spawnPosition, Quaternion.identity);
+
+        aliveEnemies.Add(spawnedEnemy);
+        enemiesSpawnedInWave++;
+    }
+
+    private Vector2 GetRandomSpawnPosition()
+    {
         Vector2 randomDirection = Random.insideUnitCircle.normalized;
 
-        // 0 벡터 방지
         if (randomDirection == Vector2.zero)
         {
             randomDirection = Vector2.right;
         }
 
-        Vector2 spawnPosition = (Vector2)player.position + randomDirection * spawnDistance;
-        GameObject spawnedEnemy = Instantiate(selectedEnemy, spawnPosition, Quaternion.identity);
-
-        aliveEnemies.Add(spawnedEnemy);
-        enemiesSpawnedInWave++;
+        return (Vector2)player.position + randomDirection * spawnDistance;
     }
 
     private GameObject GetRandomEnemyPrefab()
