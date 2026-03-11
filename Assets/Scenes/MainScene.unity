@@ -239,10 +239,74 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 65c0489fe0d6e5642b18134ff5c33df6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  enemyPrefab: {fileID: 5704116753002842335, guid: 91e79cba7e48bde4f83f716e9665b487, type: 3}
+  enemyPrefabs:
+  - {fileID: 5704116753002842335, guid: 91e79cba7e48bde4f83f716e9665b487, type: 3}
+  - {fileID: 5704116753002842335, guid: a74b53db64cddfd46be0a6127d0462c1, type: 3}
+  - {fileID: 5704116753002842335, guid: 4001d95b964d85748bbad2c61b8db353, type: 3}
+  - {fileID: 5704116753002842335, guid: 01cb6fad15defea4d90b0c9ba875ea97, type: 3}
+  wavePatterns:
+  - waveName: Basic Intro
+    spawnGroups:
+    - enemyPrefab: {fileID: 5704116753002842335, guid: 91e79cba7e48bde4f83f716e9665b487, type: 3}
+      count: 10
+      spawnMode: 0
+      spawnInterval: 1
+  - waveName: Basic Mix
+    spawnGroups:
+    - enemyPrefab: {fileID: 5704116753002842335, guid: 91e79cba7e48bde4f83f716e9665b487, type: 3}
+      count: 7
+      spawnMode: 0
+      spawnInterval: 0
+    - enemyPrefab: {fileID: 5704116753002842335, guid: a74b53db64cddfd46be0a6127d0462c1, type: 3}
+      count: 3
+      spawnMode: 0
+      spawnInterval: 0.8
+  - waveName: Fast Rush
+    spawnGroups:
+    - enemyPrefab: {fileID: 5704116753002842335, guid: a74b53db64cddfd46be0a6127d0462c1, type: 3}
+      count: 10
+      spawnMode: 1
+      spawnInterval: 0
+  - waveName: Tank Wall
+    spawnGroups:
+    - enemyPrefab: {fileID: 5704116753002842335, guid: 01cb6fad15defea4d90b0c9ba875ea97, type: 3}
+      count: 15
+      spawnMode: 1
+      spawnInterval: 0
+  - waveName: Tank Frontline
+    spawnGroups:
+    - enemyPrefab: {fileID: 5704116753002842335, guid: 01cb6fad15defea4d90b0c9ba875ea97, type: 3}
+      count: 5
+      spawnMode: 1
+      spawnInterval: 0
+    - enemyPrefab: {fileID: 5704116753002842335, guid: 4001d95b964d85748bbad2c61b8db353, type: 3}
+      count: 5
+      spawnMode: 0
+      spawnInterval: 0.8
+  - waveName: Mixed Chaos
+    spawnGroups:
+    - enemyPrefab: {fileID: 5704116753002842335, guid: 91e79cba7e48bde4f83f716e9665b487, type: 3}
+      count: 10
+      spawnMode: 0
+      spawnInterval: 0.3
+    - enemyPrefab: {fileID: 5704116753002842335, guid: a74b53db64cddfd46be0a6127d0462c1, type: 3}
+      count: 4
+      spawnMode: 1
+      spawnInterval: 0
+    - enemyPrefab: {fileID: 5704116753002842335, guid: 4001d95b964d85748bbad2c61b8db353, type: 3}
+      count: 10
+      spawnMode: 0
+      spawnInterval: 0.6
   player: {fileID: 1835667377}
-  spawnInterval: 2
   spawnDistance: 8
+  startWave: 1
+  baseEnemyCount: 5
+  enemyCountIncreasePerWave: 4
+  waveStartDelay: 2
+  defaultSpawnMode: 0
+  sequentialSpawnInterval: 1
+  burstSpawnCountPerBatch: 4
+  burstSpawnInterval: 2
 --- !u!4 &245197202
 Transform:
   m_ObjectHideFlags: 0
@@ -470,6 +534,9 @@ GameObject:
   - component: {fileID: 1663198247}
   - component: {fileID: 1663198246}
   - component: {fileID: 1663198245}
+  - component: {fileID: 1663198248}
+  - component: {fileID: 1663198249}
+  - component: {fileID: 1663198250}
   m_Layer: 0
   m_Name: Drone
   m_TagString: Untagged
@@ -569,6 +636,57 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1663198248
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663198244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0d536dcd976eb1b49ba09ef4a452ddf1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DroneAttackModule
+  droneController: {fileID: 1663198245}
+  projectilePrefab: {fileID: 1677004498415754057, guid: 29860d43d2f99044b9ffcad431a22f1f, type: 3}
+  attackRange: 6
+  attackCooldown: 0.8
+  targetRefreshInterval: 0.2
+--- !u!114 &1663198249
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663198244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 25fe540197dab1f45b472b44f60b6a46, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DroneBuffModule
+  droneController: {fileID: 1663198245}
+  playerWeaponController: {fileID: 1835667381}
+  attackBuffMultiplier: 1.3
+--- !u!114 &1663198250
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1663198244}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c7c32e13f33ae70469c380b6c9149b4b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DroneHealModule
+  droneController: {fileID: 1663198245}
+  playerHealth: {fileID: 1835667380}
+  playerMovement: {fileID: 1835667373}
+  healInterval: 1
+  healAmount: 1
+  speedMultiplier: 0.75
+  healStartDelay: 1
 --- !u!1 &1835667372
 GameObject:
   m_ObjectHideFlags: 0
@@ -772,6 +890,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerShooter
   firePoint: {fileID: 1493139007}
   projectilePrefab: {fileID: 5356836641781799663, guid: 29860d43d2f99044b9ffcad431a22f1f, type: 3}
+  weaponController: {fileID: 1835667381}
 --- !u!114 &1835667380
 MonoBehaviour:
   m_ObjectHideFlags: 0
