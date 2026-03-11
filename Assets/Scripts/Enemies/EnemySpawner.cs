@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class EnemySpawner : MonoBehaviour
 {
@@ -49,6 +50,8 @@ public class EnemySpawner : MonoBehaviour
     private bool isWaitingNextWave;
     private bool isBattleStarted;
     private bool isRoomCleared;
+
+    public Action OnRoomCleared;
 
     private readonly List<GameObject> aliveEnemies = new List<GameObject>();
 
@@ -311,7 +314,7 @@ public class EnemySpawner : MonoBehaviour
 
     private Vector2 GetRandomSpawnPosition()
     {
-        Vector2 randomDirection = Random.insideUnitCircle.normalized;
+        Vector2 randomDirection = UnityEngine.Random.insideUnitCircle.normalized;
 
         if (randomDirection == Vector2.zero)
         {
@@ -323,7 +326,7 @@ public class EnemySpawner : MonoBehaviour
 
     private GameObject GetRandomEnemyPrefab()
     {
-        int randomIndex = Random.Range(0, enemyPrefabs.Length);
+        int randomIndex = UnityEngine.Random.Range(0, enemyPrefabs.Length);
         return enemyPrefabs[randomIndex];
     }
 
@@ -340,11 +343,20 @@ public class EnemySpawner : MonoBehaviour
 
     private void ClearRoom()
     {
+        // 중복 호출 방지
+        if (isRoomCleared)
+        {
+            return;
+        }
+
         isRoomCleared = true;
         isWaveActive = false;
         isWaitingNextWave = false;
 
         Debug.Log("Room Cleared");
+
+        // 외부 시스템에 방 클리어 알림
+        OnRoomCleared?.Invoke();
     }
 
     public int GetCurrentWave()
