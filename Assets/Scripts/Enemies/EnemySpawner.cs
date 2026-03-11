@@ -33,6 +33,11 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int burstSpawnCountPerBatch = 3;
     [SerializeField] private float burstSpawnInterval = 2f;
 
+    [Header("스폰 인디케이터")]
+    [SerializeField] private GameObject spawnIndicatorPrefab;
+    [SerializeField] private float spawnIndicatorDuration = 0.8f;
+    [SerializeField] private bool useSpawnIndicator = true;
+
     private int currentWave;
     private int enemiesToSpawn;
     private int enemiesSpawnedInWave;
@@ -266,10 +271,7 @@ public class EnemySpawner : MonoBehaviour
         }
 
         Vector2 spawnPosition = GetRandomSpawnPosition();
-        GameObject spawnedEnemy = Instantiate(selectedEnemy, spawnPosition, Quaternion.identity);
-
-        aliveEnemies.Add(spawnedEnemy);
-        enemiesSpawnedInWave++;
+        StartCoroutine(SpawnEnemyWithIndicator(selectedEnemy, spawnPosition));
     }
 
     private void SpawnSpecificEnemy(GameObject prefab)
@@ -280,7 +282,28 @@ public class EnemySpawner : MonoBehaviour
         }
 
         Vector2 spawnPosition = GetRandomSpawnPosition();
-        GameObject spawnedEnemy = Instantiate(prefab, spawnPosition, Quaternion.identity);
+        StartCoroutine(SpawnEnemyWithIndicator(prefab, spawnPosition));
+    }
+
+    // 인디케이터를 먼저 보여주고 일정 시간 후에 적을 생성하는 코루틴
+    private System.Collections.IEnumerator SpawnEnemyWithIndicator(GameObject enemyPrefab, Vector2 spawnPosition)
+    {
+        // 인디케이터 표시
+        if (useSpawnIndicator && spawnIndicatorPrefab != null)
+        {
+            GameObject indicator = Instantiate(spawnIndicatorPrefab, spawnPosition, Quaternion.identity);
+
+            SpawnIndicator indicatorComponent = indicator.GetComponent<SpawnIndicator>();
+            if (indicatorComponent != null)
+            {
+                indicatorComponent.SetLifeTime(spawnIndicatorDuration);
+            }
+
+            yield return new WaitForSeconds(spawnIndicatorDuration);
+        }
+
+        // 실제 적 생성
+        GameObject spawnedEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
 
         aliveEnemies.Add(spawnedEnemy);
         enemiesSpawnedInWave++;
