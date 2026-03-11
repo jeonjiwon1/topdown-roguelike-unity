@@ -22,6 +22,11 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int enemyCountIncreasePerWave = 2;
     [SerializeField] private float waveStartDelay = 2f;
 
+    [Header("방 전투 설정")]
+    [SerializeField] private bool startOnPlay = true;
+    [SerializeField] private bool useRoomWaveLimit = true;
+    [SerializeField] private int maxWavesPerRoom = 5;
+
     [Header("랜덤 웨이브 기본 스폰 방식")]
     [SerializeField] private SpawnMode defaultSpawnMode = SpawnMode.Sequential;
     [SerializeField] private float sequentialSpawnInterval = 1f;
@@ -37,17 +42,28 @@ public class EnemySpawner : MonoBehaviour
 
     private bool isWaveActive;
     private bool isWaitingNextWave;
+    private bool isBattleStarted;
+    private bool isRoomCleared;
 
     private readonly List<GameObject> aliveEnemies = new List<GameObject>();
 
     private void Start()
     {
         currentWave = startWave - 1;
-        StartNextWave();
+
+        if (startOnPlay)
+        {
+            StartRoomBattle();
+        }
     }
 
     private void Update()
     {
+        if (!isBattleStarted || isRoomCleared)
+        {
+            return;
+        }
+
         CleanupDeadEnemies();
 
         if (isWaitingNextWave)
@@ -69,7 +85,7 @@ public class EnemySpawner : MonoBehaviour
             return;
         }
 
-        // 패턴 웨이브가 없는 경우에만 랜덤 웨이브 스폰 실행
+        // 패턴 웨이브가 끝난 뒤에만 랜덤 웨이브 스폰
         if (currentWave - 1 >= wavePatterns.Length)
         {
             switch (defaultSpawnMode)
@@ -84,24 +100,58 @@ public class EnemySpawner : MonoBehaviour
             }
         }
 
-        // 이번 웨이브 적을 전부 생성했고, 살아있는 적도 없으면 웨이브 종료
+        // 웨이브 종료 판정
         if (enemiesSpawnedInWave >= enemiesToSpawn && aliveEnemies.Count == 0)
         {
             isWaveActive = false;
-            isWaitingNextWave = true;
 
             Debug.Log("Wave Clear : " + currentWave);
+
+            // 마지막 웨이브면 방 클리어
+            if (useRoomWaveLimit && currentWave >= maxWavesPerRoom)
+            {
+                ClearRoom();
+            }
+            else
+            {
+                isWaitingNextWave = true;
+            }
         }
+    }
+
+    public void StartRoomBattle()
+    {
+        if (isBattleStarted)
+        {
+            return;
+        }
+
+        isBattleStarted = true;
+        isRoomCleared = false;
+        isWaitingNextWave = false;
+        isWaveActive = false;
+        waveDelayTimer = 0f;
+        spawnTimer = 0f;
+
+        currentWave = startWave - 1;
+        StartNextWave();
     }
 
     private void StartNextWave()
     {
+        // 방 웨이브 제한이 있으면 최대 웨이브를 넘기지 않도록 막기
+        if (useRoomWaveLimit && currentWave >= maxWavesPerRoom)
+        {
+            ClearRoom();
+            return;
+        }
+
         currentWave++;
         enemiesSpawnedInWave = 0;
         spawnTimer = 0f;
         isWaveActive = true;
 
-        // 패턴 웨이브가 있으면 그걸 우선 사용
+        // 패턴 웨이브가 있으면 우선 사용
         if (currentWave - 1 < wavePatterns.Length)
         {
             StartPatternWave(wavePatterns[currentWave - 1]);
@@ -265,6 +315,15 @@ public class EnemySpawner : MonoBehaviour
         }
     }
 
+    private void ClearRoom()
+    {
+        isRoomCleared = true;
+        isWaveActive = false;
+        isWaitingNextWave = false;
+
+        Debug.Log("Room Cleared");
+    }
+
     public int GetCurrentWave()
     {
         return currentWave;
@@ -273,5 +332,15 @@ public class EnemySpawner : MonoBehaviour
     public int GetAliveEnemyCount()
     {
         return aliveEnemies.Count;
+    }
+
+    public bool IsRoomCleared()
+    {
+        return isRoomCleared;
+    }
+
+    public bool IsBattleStarted()
+    {
+        return isBattleStarted;
     }
 }
