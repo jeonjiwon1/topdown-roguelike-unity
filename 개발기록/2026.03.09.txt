@@ -1,0 +1,57 @@
+2026.03.09
+전투 시스템 개선
+
+Enemy Attack 시스템
+	Enemy 공격 사거리 설정
+	Attack 상태에서 플레이어에게 실제 데미지 적용
+	Enemy 공격 쿨타임 처리
+구현 스크립트
+	EnemyAI.cs
+
+Knockback 시스템
+	Projectile 충돌 시 Enemy가 뒤로 밀려나는 Knockback 구현
+	Rigidbody2D AddForce 기반 처리
+	Enemy가 계속 밀려나는 문제 수정
+구현 스크립트
+	EnemyHealth.cs
+	Projectile.cs
+
+Hit Feedback
+	Enemy 피격 시 색상 변경 피드백 추가
+	피격 시 일정 시간 Hit Color 적용
+구현 스크립트
+	EnemyHealth.cs
+
+
+플레이어 무기 시스템 확장
+
+Weapon Switch System
+	플레이어 무기 전환 시스템 구현
+	Q : 이전 무기
+	E : 다음 무기
+	무기 순환 전환 구조 적용
+구현 스크립트
+	PlayerWeaponController.cs
+
+Melee Weapon
+	플레이어 주변 범위 공격 구현
+	Physics2D OverlapCircle 기반 공격 판정
+구현 스크립트
+	MeleeWeapon.cs
+
+Magic Weapon
+	마우스 위치에 마법 장판 생성
+	사거리 제한 적용
+	범위 내 Enemy 데미지 처리
+구현 스크립트
+	MagicWeapon.cs
+	MagicArea.cs
+
+
+Drone 시스템 기초 구현
+
+Drone Controller
+	플레이어를 따라다니는 드론 구현
+	플레이어 등 뒤 위치 유지
+구현 스크립트
+	DroneController.cs

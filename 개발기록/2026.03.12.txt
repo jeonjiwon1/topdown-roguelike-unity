@@ -1,0 +1,75 @@
+오전 7:53 2026-03-12
+
+- 로드맵 22번 이후 구간 재정리
+- 전투 피드백 UI, 방 클리어 연결, 방 인터랙션, 이동 선택, 정비 구간 시스템 순서로 진행하도록 로드맵 수정
+- 아트는 1차/2차로 나눠 적용하는 방향으로 정리
+- 아트 1차 적용은 현재 보류하고 기능 구현 우선 진행하기로 결정
+
+- EnemySpawner.cs 수정
+- 방 단위 웨이브 완료형 구조 적용
+- maxWavesPerRoom, RoomCleared 상태, StartRoomBattle 구조 반영
+- 마지막 웨이브 종료 후 무한 웨이브가 아니라 방 클리어로 끝나도록 변경
+
+- SpawnIndicator.cs 추가
+- 적 생성 전 경고 마커가 잠깐 표시된 뒤 실제 적이 생성되도록 구현
+- EnemySpawner와 연결해서 Sequential / Burst 스폰 모두 인디케이터 사용 가능하게 수정
+
+- BattleUIController.cs 추가
+- 현재 웨이브 표시 UI 구현
+- 남은 적 수 표시 UI 구현
+- 방 클리어 표시 UI 구현
+- Canvas에 전투 피드백용 최소 UI 구성
+
+- EnemySpawner.cs 추가 수정
+- OnRoomCleared 이벤트 연결 구조 추가
+- 방 클리어 시 외부 시스템이 신호를 받을 수 있도록 기반 구성
+
+- RoomClearListener.cs 추가
+- 방 클리어 시 특정 오브젝트 활성화 / 비활성화 테스트 구조 구현
+- ExitPortal 활성화 테스트로 방 클리어 신호 전달 확인
+
+- RoomDoor.cs 추가
+- 문 열림 / 닫힘 상태 제어 구조 구현
+- Collider2D와 SpriteRenderer를 이용해 문이 열리면 통과 가능, 닫히면 통과 불가하도록 처리
+
+- RoomBattleController.cs 추가
+- 전투 시작 시 문 닫힘
+- 방 클리어 시 문 열림
+- EnemySpawner 시작 흐름을 RoomBattleController 기준으로 관리하도록 정리
+
+- RoomExitPortal.cs 추가
+- 방 클리어 후 활성화되는 출구 포탈 구조 구현
+- 플레이어가 포탈에 들어가면 다음 이동 처리용 신호 발생 구조 추가
+
+- RoomTransitionController.cs 추가
+- 방 클리어 시 포탈 활성화
+- 플레이어가 포탈에 들어가면 다음 방 이동 처리용 로그/위치 이동 구조 구현
+
+- InteractableBase.cs 추가
+- 정비 구간 공통 상호작용 베이스 클래스 구현
+
+- PlayerInteraction.cs 추가
+- 플레이어가 상호작용 가능한 오브젝트에 접근했을 때 입력으로 상호작용할 수 있는 구조 구현
+- 상호작용 키는 기존 E키 중복 문제로 Space 키 사용하도록 설정
+
+- HealStation.cs 추가
+- 정비 구간 회복 스테이션 구현
+- PlayerHealth의 Heal(int amount)와 연결
+- 1회 사용 후 비활성 개념(재사용 제한 및 색상 변경) 적용
+
+- UpgradeStation.cs 추가
+- 정비 구간 업그레이드 스테이션 기초 구조 구현
+- 현재는 테스트용 로그 출력 및 1회 사용 처리까지 구현
+
+- HealStation / UpgradeStation 테스트 완료
+- PlayerInteraction + Trigger Collider 기반 상호작용 동작 확인
+- 회복 스테이션 / 업그레이드 스테이션 정상 작동 확인
+
+[현재 상태]
+- 26 정비 구간 시스템까지 기초 구현 완료
+- 27 아트 1차 적용은 보류
+- 다음 작업은 28 엘리트 몬스터 시스템 진행 예정
+
+[정리]
+- 오늘은 전투 1회 진행 후 방 클리어, 문 열림, 포탈 활성화, 정비 구간 상호작용까지 이어지는 기본 게임 루프의 뼈대를 구현함
+- 다음 작업은 아트 1차 적용을 보류하고 엘리트 몬스터 시스템으로 진행 예정

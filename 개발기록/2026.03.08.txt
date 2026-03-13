@@ -1,0 +1,57 @@
+2026.03.08
+Player 시스템
+Player Movement
+	Rigidbody2D 기반 이동 구현
+	WASD 입력 처리 (Unity Input System 사용)
+	대각선 이동 속도 보정
+	PlayerMovement.cs 작성
+
+Mouse Aim
+	마우스 위치를 월드 좌표로 변환
+	플레이어가 마우스 방향을 바라보도록 회전
+	AimPivot / AimVisual 구조 추가
+	PlayerAim.cs 구현
+
+Weapon 시스템
+Projectile Weapon
+	FirePoint 기반 발사 구조 구현
+	마우스 클릭 시 투사체 생성
+	Projectile 이동 방향 초기화
+	Projectile lifetime 적용
+구현 스크립트
+	PlayerShooter.cs
+	Projectile.cs
+
+Enemy 시스템
+Enemy AI
+	플레이어 추적 AI 구현
+	Rigidbody2D 기반 이동
+	EnemyAI.cs 작성
+
+Enemy Health
+	Enemy 체력 시스템 구현
+	Projectile 충돌 시 데미지 적용
+	Enemy 사망 처리
+
+구현 스크립트
+	EnemyHealth.cs
+
+Enemy Spawn System
+	일정 시간마다 Enemy 생성
+	플레이어 주변 랜덤 위치에서 스폰
+	EnemySpawner.cs 구현
+
+Enemy FSM 구조 도입
+AI 상태 구조 설계
+상태
+	Idle
+	Chase
+	Attack
+FSM 구조로 EnemyAI 리팩토링
+
+Player Health 시스템
+	Player 체력 시스템 구현
+	Enemy 충돌 시 플레이어 데미지
+	Player 사망 처리
+구현 스크립트
+	PlayerHealth.cs

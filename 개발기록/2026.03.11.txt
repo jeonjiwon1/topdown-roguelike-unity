@@ -1,0 +1,155 @@
+2026.03.11
+Drone 시스템 확장
+
+Drone Mode 시스템
+	드론 역할 모드 구현
+	1 : Heal Mode
+	2 : Buff Mode
+	3 : Attack Mode
+	키 입력으로 드론 모드 전환 가능
+구현 스크립트
+	DroneMode.cs
+	DroneController.cs
+
+Drone Attack Module
+	드론이 플레이어 주변에서 자동으로 적을 공격
+	일정 간격마다 투사체 발사
+	Attack Mode일 때만 동작하도록 구현
+구현 스크립트
+	DroneAttackModule.cs
+
+Drone Buff Module
+	플레이어 공격력 증가 버프 구현
+	PlayerWeaponController에 Damage Multiplier 구조 추가
+	드론 Buff Mode에서 플레이어 공격력 상승 적용
+구현 스크립트
+	DroneBuffModule.cs
+	PlayerWeaponController.cs
+
+Drone Heal Module 설계
+	Heal Mode 설계 방향 결정
+	지속 힐이 아닌 토글형 힐 구조
+	플레이어가 공격 가능 상태 유지
+	이동 속도 감소 패널티 적용 예정
+구현 스크립트
+	DroneHealModule.cs
+
+
+Enemy 시스템 확장
+
+Fast Enemy
+	자폭형 적 구현
+	플레이어와 접촉 시 데미지 후 즉시 사망
+	높은 이동 속도 / 낮은 체력
+구현 스크립트
+	EnemyAI.cs
+
+Tank Enemy
+	고체력 적 구현
+	넉백 저항 추가
+	느린 이동 속도 / 높은 체력
+구현 스크립트
+	EnemyAI.cs
+
+Shooter Enemy
+	원거리 공격 Enemy 구현
+	플레이어와 일정 거리 유지 AI
+	투사체 발사 공격 방식
+구현 스크립트
+	EnemyShooter.cs
+	EnemyProjectile.cs
+	EnemyAI.cs
+
+
+Enemy Spawn 시스템 개선
+
+EnemySpawner 확장
+	단일 Enemy 스폰 구조 → 다중 Enemy 스폰 구조 변경
+	Enemy Prefabs 배열 기반 랜덤 Enemy 생성
+구현 스크립트
+	EnemySpawner.cs
+
+Wave 시스템 1차 구현
+	웨이브 단위 전투 구조 도입
+	웨이브 번호 관리
+	웨이브별 적 수 증가
+	적 전부 처치 시 다음 웨이브 진행
+구현 스크립트
+	EnemySpawner.cs
+
+Spawn 방식 확장
+	Sequential Spawn (순차 스폰)
+	Burst Spawn (동시 스폰)
+	두 가지 스폰 방식 선택 가능
+구현 스크립트
+	EnemySpawner.cs
+
+
+Wave Pattern 시스템
+
+패턴 기반 웨이브 시스템 구현
+	웨이브마다 Enemy 조합을 직접 설계 가능
+	SpawnGroup 구조 도입
+	적 종류 / 수량 / 스폰 방식 설정 가능
+구현 스크립트
+	WavePattern.cs
+	EnemySpawner.cs
+
+패턴 웨이브 예시
+	Basic Intro
+	Fast Rush
+	Tank Wall
+	Tank Frontline
+	Mixed Combat
+	Shooter Pressure
+
+패턴 웨이브 이후 랜덤 웨이브 전환
+	WavePattern이 끝난 이후 랜덤 Enemy 스폰 진행
+
+
+전투 시스템 설계 확장
+
+게임 진행 구조 설계
+
+Chapter (행성 테마)
+	행성별 테마 Enemy
+	챕터별 적 능력치 상승
+
+Stage (층 구조)
+	행성 내 진행 층
+	층 진행에 따른 난이도 상승
+
+Wave (전투 단위)
+	적 수 증가
+	적 조합 변화
+	전투 압박 증가
+
+
+전투 설계 방향 결정
+
+웨이브 난이도 상승 방식
+	웨이브 자체에서 적 능력치를 크게 상승시키지 않음
+	적 수 / 조합 / 전투 패턴 중심으로 난이도 조절
+
+난이도 상승 구조
+
+	Chapter → 적 기본 능력치 상승
+	Stage → 점진적 난이도 상승
+	Wave → 전투 패턴 변화
+
+상점 / 증강 / 정비 구간 이후
+	다음 구간 적 난이도 상승 구조 설계
+
+
+추가 전투 시스템 설계
+
+Spawn Indicator 시스템 설계
+	적 등장 위치 사전 표시
+	0.5 ~ 0.7초 후 Enemy 스폰
+	Burst 스폰 시 공정성 확보 목적
+
+Enemy Director 시스템 검토
+	플레이어 상태 기반 적 스폰 밀도 조절
+	전투 긴장도 자동 조절 시스템
+
+// 웨이브 시스템이 현재까진 무한으로 올라가는데 언제까지인지? -> 방 structure을 만들때 만들면 되나?
