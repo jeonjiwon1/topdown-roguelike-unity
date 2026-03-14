@@ -65,4 +65,19 @@ public class PlayerHealth : MonoBehaviour
         Debug.Log("Player Dead");
         Destroy(gameObject);
     }
+
+    public int GetCurrentHealth()
+    {
+        return currentHealth;
+    }
+
+    public int GetMaxHealth()
+    {
+        return maxHealth;
+    }
+
+    public bool IsFullHealth()
+    {
+        return currentHealth >= maxHealth;
+    }
 }
