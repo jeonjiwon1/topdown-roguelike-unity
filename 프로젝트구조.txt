@@ -2,16 +2,41 @@
 Assets/Scripts/AI
 ==============================
 
-EnemyAI.cs
-	Enemy FSM 기반 AI. Idle / Chase / Attack 상태 관리, 플레이어 추적 및 공격 처리, 넉백 처리 포함.
 
-EnemyState.cs
-	Enemy FSM 상태 정의 enum (Idle / Chase / Attack).
+==============================
+Assets/Scripts/Core
+==============================
+
+
+==============================
+Assets/Scripts/Dungeon
+==============================
+
+HealStation.cs
+	정비 구간 회복 스테이션. PlayerHealth의 Heal 함수와 연결되어 플레이어 체력 회복 처리 담당.
+
+RoomBattleController.cs
+	방 전투 흐름 관리. 전투 시작 시 문 닫힘, 방 클리어 시 문 열림, EnemySpawner 시작 흐름 제어 담당.
+
+RoomDoor.cs
+	방 문 상태 제어 스크립트. 문 열림/닫힘에 따라 Collider2D 및 SpriteRenderer 상태 변경 처리.
+
+RoomExitPortal.cs
+	방 클리어 후 활성화되는 출구 포탈 스크립트. 포탈 활성/비활성 상태 관리 및 플레이어 진입 감지 담당.
+
+RoomTransitionController.cs
+	방 이동 흐름 제어 스크립트. 방 클리어 시 포탈 활성화, 포탈 진입 시 다음 방 이동용 처리 신호 담당.
+
+UpgradeStation.cs
+	정비 구간 업그레이드 스테이션. 업그레이드 상호작용 기초 구조 및 1회 사용 처리 담당.
 
 
 ==============================
 Assets/Scripts/Enemies
 ==============================
+
+EnemyAI.cs
+	Enemy FSM 기반 AI. Idle / Chase / Attack 상태 관리, 플레이어 추적 및 공격 처리, 넉백 처리 포함.
 
 EnemyHealth.cs
 	Enemy 체력 관리. 데미지 처리, 사망 처리, 피격 피드백 및 Knockback 호출 담당.
@@ -23,7 +48,10 @@ EnemyShooter.cs
 	ShooterEnemy 전용 공격 모듈. 플레이어와 거리 체크 후 투사체 발사.
 
 EnemySpawner.cs
-	웨이브 기반 Enemy 스폰 시스템. Sequential/Burst 스폰, WavePattern 기반 패턴 웨이브 및 랜덤 웨이브 관리. 방 단위 웨이브 종료, RoomCleared 판정, 스폰 인디케이터 및 방 클리어 이벤트 전송 포함.
+	웨이브 기반 Enemy 스폰 시스템. Sequential/Burst 스폰, WavePattern 기반 패턴 웨이브 및 랜덤 웨이브 관리. 현재는 방 단위 웨이브 종료, RoomCleared 판정, 스폰 인디케이터 연동, 방 클리어 이벤트 전송까지 포함한 핵심 전투 스포너.
+
+EnemyState.cs
+	Enemy FSM 상태 정의 enum (Idle / Chase / Attack).
 
 WavePattern.cs
 	패턴 기반 웨이브 데이터 구조. SpawnGroup으로 Enemy 종류, 수량, SpawnMode 정의.
@@ -33,11 +61,29 @@ WavePattern.cs
 Assets/Scripts/Player
 ==============================
 
+DroneAttackModule.cs
+	Attack Mode 드론 공격 모듈. 일정 간격으로 Enemy 공격 수행.
+
+DroneBuffModule.cs
+	Buff Mode 드론 모듈. PlayerWeaponController 공격력 multiplier 증가 버프 적용.
+
+DroneController.cs
+	플레이어를 따라다니는 드론 위치 및 동작 제어.
+
+DroneHealModule.cs
+	Heal Mode 드론 모듈. 플레이어 체력 회복 기능 담당.
+
+DroneMode.cs
+	드론 역할 모드 enum 정의 (Heal / Buff / Attack).
+
 PlayerAim.cs
 	마우스 위치 기반 플레이어 에임 방향 계산 및 회전 처리.
 
 PlayerHealth.cs
 	플레이어 체력 시스템. 데미지 처리, 사망 처리, 회복 기능 포함.
+
+PlayerInteraction.cs
+	플레이어 상호작용 처리 스크립트. 상호작용 가능한 오브젝트 접근 감지 및 Space 키 입력 상호작용 담당.
 
 PlayerMovement.cs
 	Rigidbody2D 기반 플레이어 이동 처리. WASD 입력 및 이동 속도 제어.
@@ -51,8 +97,19 @@ PlayerWeaponController.cs
 PlayerWeaponType.cs
 	플레이어 무기 타입 enum 정의.
 
-PlayerInteraction.cs
-	플레이어 상호작용 처리 스크립트. 상호작용 가능한 오브젝트 접근 감지 및 Space 키 입력 상호작용 담당.
+
+==============================
+Assets/Scripts/Systems
+==============================
+
+InteractableBase.cs
+	정비 구간 상호작용 오브젝트 공통 베이스 클래스. 상호작용 문구 제공 및 Interact 인터페이스 정의.
+
+RoomClearListener.cs
+	방 클리어 이벤트 수신용 스크립트. RoomCleared 신호를 받아 특정 오브젝트 활성화/비활성화 처리 담당.
+
+SpawnIndicator.cs
+	Enemy 생성 전 잠깐 표시되는 스폰 경고 마커. 일정 시간 표시 후 자동 제거되며, 스폰 연출용으로 사용.
 
 
 ==============================
@@ -73,64 +130,7 @@ Projectile.cs
 
 
 ==============================
-Assets/Scripts/Core
-==============================
-
-DroneAttackModule.cs
-	Attack Mode 드론 공격 모듈. 일정 간격으로 Enemy 공격 수행.
-
-DroneBuffModule.cs
-	Buff Mode 드론 모듈. PlayerWeaponController 공격력 multiplier 증가 버프 적용.
-
-DroneController.cs
-	플레이어를 따라다니는 드론 위치 및 동작 제어.
-
-DroneHealModule.cs
-	Heal Mode 드론 모듈. 플레이어 체력 회복 기능 담당.
-
-DroneMode.cs
-	드론 역할 모드 enum 정의 (Heal / Buff / Attack).
-
-
-==============================
-Assets/Scripts/Dungeon
-==============================
-
-RoomDoor.cs
-	방 문 상태 제어 스크립트. 문 열림/닫힘에 따라 Collider2D 및 SpriteRenderer 상태 변경 처리.
-
-RoomBattleController.cs
-	방 전투 흐름 관리. 전투 시작 시 문 닫힘, 방 클리어 시 문 열림, EnemySpawner 시작 흐름 제어 담당.
-
-RoomExitPortal.cs
-	방 클리어 후 활성화되는 출구 포탈 스크립트. 포탈 활성/비활성 상태 관리 및 플레이어 진입 감지 담당.
-
-RoomTransitionController.cs
-	방 이동 흐름 제어 스크립트. 방 클리어 시 포탈 활성화, 포탈 진입 시 다음 방 이동용 처리 신호 담당.
-
-HealStation.cs
-	정비 구간 회복 스테이션. PlayerHealth의 Heal 함수와 연결되어 플레이어 체력 회복 처리 담당.
-
-UpgradeStation.cs
-	정비 구간 업그레이드 스테이션. 업그레이드 상호작용 기초 구조 및 1회 사용 처리 담당.
-
-
-==============================
-Assets/Scripts/Systems
-==============================
-
-SpawnIndicator.cs
-	Enemy 생성 전 잠깐 표시되는 스폰 경고 마커. 일정 시간 표시 후 자동 제거되며, 스폰 연출용으로 사용.
-
-RoomClearListener.cs
-	방 클리어 이벤트 수신용 스크립트. RoomCleared 신호를 받아 특정 오브젝트 활성화/비활성화 처리 담당.
-
-InteractableBase.cs
-	정비 구간 상호작용 오브젝트 공통 베이스 클래스. 상호작용 문구 제공 및 Interact 인터페이스 정의.
-
-
-==============================
-Assets/Scripts/UI
+Assets/UI
 ==============================
 
 BattleUIController.cs
@@ -142,18 +142,13 @@ BattleUIController.cs
 ==============================
 
 Player
-	Movement / Aim / Health / Weapon / Interaction 시스템
+	Movement / Aim / Health / Weapon / Interaction / Drone 시스템
 
 Weapons
 	Melee / Projectile / MagicArea
 
-Drone
-	Heal / Buff / Attack 모드
-
 Enemy
 	Basic / Fast / Tank / Shooter
-
-Combat System
 	Wave 시스템
 	Sequential / Burst 스폰
 	WavePattern 기반 패턴 웨이브
@@ -162,18 +157,18 @@ Combat System
 	RoomCleared 판정
 	스폰 인디케이터 연출
 
+Dungeon
+	방 전투 시작 / 종료 흐름
+	문 열림 / 닫힘 제어
+	출구 포탈 활성화
+	포탈 진입 시 다음 방 이동용 처리
+	정비 구간 회복 / 업그레이드 스테이션
+
+Systems
+	공통 상호작용 구조
+	방 클리어 이벤트 연결
+	스폰 연출 보조 시스템
+
 UI
 	전투 피드백 UI
 	현재 웨이브 / 남은 적 수 / 방 클리어 표시
-
-Room / Dungeon System
-	문 열림 / 닫힘 제어
-	방 전투 시작 / 종료 흐름
-	방 클리어 이벤트 전달
-	출구 포탈 활성화
-	포탈 진입 시 다음 방 이동용 처리
-
-Interaction / Rest System
-	공통 상호작용 구조
-	회복 스테이션
-	업그레이드 스테이션
