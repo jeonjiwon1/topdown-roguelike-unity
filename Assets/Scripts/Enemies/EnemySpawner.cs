@@ -46,6 +46,14 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private int eliteEnemyCount = 1;
     [SerializeField] private bool spawnEliteOnlyOnce = true;
 
+    [Header("보스 웨이브 설정")]
+    [SerializeField] private bool useBossWave = true;
+    [SerializeField] private int bossWaveNumber = 5;
+    [SerializeField] private GameObject bossPrefab;
+    [SerializeField] private bool spawnBossOnlyOnce = true;
+
+    private bool hasSpawnedBossWave;
+
     private bool hasSpawnedEliteWave;
 
     private int currentWave;
@@ -167,7 +175,14 @@ public class EnemySpawner : MonoBehaviour
         spawnTimer = 0f;
         isWaveActive = true;
 
-        // 엘리트 웨이브 우선 처리
+        // 보스 웨이브 우선 처리
+        if (ShouldStartBossWave())
+        {
+            StartBossWave();
+            return;
+        }
+
+        // 엘리트 웨이브 처리
         if (ShouldStartEliteWave())
         {
             StartEliteWave();
@@ -431,5 +446,41 @@ public class EnemySpawner : MonoBehaviour
     public bool IsBattleStarted()
     {
         return isBattleStarted;
+    }
+
+    private bool ShouldStartBossWave()
+    {
+        if (!useBossWave)
+        {
+            return false;
+        }
+
+        if (bossPrefab == null)
+        {
+            return false;
+        }
+
+        if (currentWave != bossWaveNumber)
+        {
+            return false;
+        }
+
+        if (spawnBossOnlyOnce && hasSpawnedBossWave)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void StartBossWave()
+    {
+        enemiesToSpawn = 1;
+
+        SpawnSpecificEnemy(bossPrefab);
+
+        hasSpawnedBossWave = true;
+
+        Debug.Log("Boss Wave Start : " + currentWave);
     }
 }

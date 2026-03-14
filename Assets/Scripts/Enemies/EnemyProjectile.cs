@@ -37,4 +37,10 @@ public class EnemyProjectile : MonoBehaviour
             Destroy(gameObject);
         }
     }
+
+    // 외부에서 이동 방향 설정
+    public void SetDirection(Vector2 direction)
+    {
+        moveDirection = direction.normalized;
+    }
 }
