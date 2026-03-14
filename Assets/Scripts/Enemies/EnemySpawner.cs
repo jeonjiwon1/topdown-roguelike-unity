@@ -39,6 +39,15 @@ public class EnemySpawner : MonoBehaviour
     [SerializeField] private float spawnIndicatorDuration = 0.8f;
     [SerializeField] private bool useSpawnIndicator = true;
 
+    [Header("엘리트 웨이브 설정")]
+    [SerializeField] private bool useEliteWave = true;
+    [SerializeField] private int eliteWaveNumber = 3;
+    [SerializeField] private GameObject eliteEnemyPrefab;
+    [SerializeField] private int eliteEnemyCount = 1;
+    [SerializeField] private bool spawnEliteOnlyOnce = true;
+
+    private bool hasSpawnedEliteWave;
+
     private int currentWave;
     private int enemiesToSpawn;
     private int enemiesSpawnedInWave;
@@ -147,7 +156,6 @@ public class EnemySpawner : MonoBehaviour
 
     private void StartNextWave()
     {
-        // 방 웨이브 제한이 있으면 최대 웨이브를 넘기지 않도록 막기
         if (useRoomWaveLimit && currentWave >= maxWavesPerRoom)
         {
             ClearRoom();
@@ -159,6 +167,13 @@ public class EnemySpawner : MonoBehaviour
         spawnTimer = 0f;
         isWaveActive = true;
 
+        // 엘리트 웨이브 우선 처리
+        if (ShouldStartEliteWave())
+        {
+            StartEliteWave();
+            return;
+        }
+
         // 패턴 웨이브가 있으면 우선 사용
         if (currentWave - 1 < wavePatterns.Length)
         {
@@ -169,6 +184,45 @@ public class EnemySpawner : MonoBehaviour
             enemiesToSpawn = baseEnemyCount + (currentWave - 1) * enemyCountIncreasePerWave;
             Debug.Log("Random Wave Start : " + currentWave + " / Enemy Count : " + enemiesToSpawn);
         }
+    }
+
+    private bool ShouldStartEliteWave()
+    {
+        if (!useEliteWave)
+        {
+            return false;
+        }
+
+        if (eliteEnemyPrefab == null)
+        {
+            return false;
+        }
+
+        if (currentWave != eliteWaveNumber)
+        {
+            return false;
+        }
+
+        if (spawnEliteOnlyOnce && hasSpawnedEliteWave)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    private void StartEliteWave()
+    {
+        enemiesToSpawn = eliteEnemyCount;
+
+        for (int i = 0; i < eliteEnemyCount; i++)
+        {
+            SpawnSpecificEnemy(eliteEnemyPrefab);
+        }
+
+        hasSpawnedEliteWave = true;
+
+        Debug.Log("Elite Wave Start : " + currentWave + " / Elite Count : " + eliteEnemyCount);
     }
 
     private void StartPatternWave(WavePattern pattern)
