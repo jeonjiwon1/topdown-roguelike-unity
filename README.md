@@ -16,7 +16,7 @@ Core Gameplay Loop
 
 
 
-Town
+Town(deleted)
 
 → Prepare equipment and manage drones
 
@@ -58,9 +58,11 @@ Mouse : Aim direction
 
 Left Click : Primary attack
 
-Right Click : Secondary ability
+1/2/3: Drone Module
 
-Shift : Dash
+Q/E: Player Weapon Module
+
+
 
 
 
@@ -193,6 +195,10 @@ Start room
 → Treasure room
 
 → Boss room
+
+
+
+Game System: Chapter < Room < Wave
 
 
 
@@ -330,9 +336,5 @@ Demo
 
 
 
-Gameplay video: 
-
-
-
-
+Gameplay video:
 
