@@ -36,7 +36,7 @@
 구조 확정
 - 게임 진행 구조는 Chapter > Room > Wave 로 정리
 - Chapter는 큰 진행 단위
-- Room은 개별 전투 / 정비 / 엘리트 / 보스 / 보상 구간
+- Room은 개별 전투 / 정비 / 엘리트 / 보스 / 보상 구간(stage랑 같다고 보면 됨)
 - Wave는 Combat Room / Boss Room 내부에서 진행되는 적 스폰 단위
 
 Room 종류
